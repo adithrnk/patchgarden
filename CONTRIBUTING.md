@@ -29,7 +29,7 @@ PatchGarden is a lightweight frontend project built with HTML, CSS, and JavaScri
 1. Fork the repository on GitHub.
 2. Clone your fork:
 
-git clone https://github.com/YOUR-USERNAME/PatchGarden.git
+git clone https://github.com/adithrnk/PatchGarden.git
 
 3. Open the project directory.
 4. Open index.html in a browser, or use a local development server.
