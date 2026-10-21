@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f5ed">
+<title>PatchGarden — Grow Open Source</title>
+<style>
+:root{--bg:#f5f5ed;--ink:#203b2c;--green:#347653;--muted:#718073;--card:#fffef8;--line:#dfe5d9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 6%;border-bottom:1px solid var(--line)}
+.logo{font-size:22px;font-weight:800;letter-spacing:-1px}
+.logo span{color:var(--green)}
+a{color:inherit}
+nav a{margin-left:20px;text-decoration:none;font-size:14px}
+.hero{max-width:1000px;margin:auto;padding:65px 22px 35px}
+.tag{color:var(--green);font-size:12px;font-weight:800;letter-spacing:2px}
+h1{font-size:clamp(38px,8vw,70px);line-height:1.03;letter-spacing:-3px;max-width:720px;margin:20px 0}
+p{line-height:1.7;color:var(--muted)}
+.hero p{max-width:600px;font-size:17px}
+.search{display:flex;gap:10px;max-width:650px;margin-top:28px}
+input,select,button,textarea{font:inherit}
+input{min-width:0;flex:1;padding:15px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)}
+button{border:0;background:var(--green);color:white;border-radius:12px;padding:14px 19px;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(.92)}
+main{max-width:1000px;margin:auto;padding:20px 22px 65px}
+.sectionhead{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+h2{font-size:27px;letter-spacing:-1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card h3{margin:8px 0}
+.icon{font-size:27px}
+.pill{display:inline-block;background:#e7efe4;color:#2e6845;border-radius:30px;padding:5px 10px;font-size:12px;font-weight:700}
+.small{font-size:13px}
+.result{margin-top:20px;white-space:pre-wrap;overflow-wrap:anywhere}
+.result ul{padding-left:22px}
+.checkrow{display:flex;gap:10px;align-items:flex-start;margin:14px 0}
+.checkrow input{flex:0 0 auto;margin-top:6px}
+textarea{width:100%;min-height:180px;border:1px solid var(--line);border-radius:12px;padding:14px;background:white;color:var(--ink)}
+footer{text-align:center;border-top:1px solid var(--line);padding:30px 15px;color:var(--muted);font-size:13px}
+button.secondary{background:#e7efe4;color:var(--ink)}
+@media(max-width:520px){nav a{margin-left:10px;font-size:12px}.search{flex-direction:column}h1{letter-spacing:-2px}.hero{padding-top:45px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🌱 Patch<span>Garden</span></div>
+  <nav><a href="#explore">Explore</a><a href="#toolkit">Toolkit</a></nav>
+</header>
+
+<section class="hero">
+  <div class="tag">OPEN SOURCE, GROWN TOGETHER</div>
+  <h1>Small contributions.<br>Real impact.</h1>
+  <p>Find your place in open source. Explore contribution ideas, check repository onboarding files, and take your first step into a developer community.</p>
+  <div class="search">
+    <input id="repo" placeholder="GitHub repository: owner/repository" aria-label="GitHub repository">
+    <button id="check">Check repository ↗</button>
+  </div>
+  <div id="repoResult" class="result" aria-live="polite"></div>
+</section>
+
+<main>
+<section id="explore">
+  <div class="sectionhead">
+    <h2>Find your first contribution</h2>
+    <select id="filter" aria-label="Filter contribution ideas">
+      <option value="all">All interests</option>
+      <option value="design">Design</option>
+      <option value="code">Coding</option>
+      <option value="docs">Documentation</option>
+      <option value="community">Community</option>
+    </select>
+  </div>
+  <div class="grid" id="ideas"></div>
+</section>
+
+<section id="toolkit" style="margin-top:55px">
+  <h2>Your contributor toolkit</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">📋</div>
+      <h3>First contribution checklist</h3>
+      <p class="small">Tick each step as you go. Your progress stays on this page while it remains open.</p>
+      <div id="tasks"></div>
+      <strong id="progress">0 of 5 complete</strong>
+    </div>
+    <div class="card">
+      <div class="icon">🌿</div>
+      <h3>Contribution guide starter</h3>
+      <p class="small">Generate a Markdown template for a project's contributing instructions.</p>
+      <button id="generate">Generate template</button>
+      <div style="margin-top:15px">
+        <textarea id="template" placeholder="Your contribution guide will appear here." aria-label="Contribution guide template"></textarea>
+      </div>
+      <button class="secondary" id="copy" style="margin-top:10px">Copy guide</button>
+      <span id="copyStatus" class="small" aria-live="polite"></span>
+    </div>
+  </div>
+</section>
+
+<section style="margin-top:45px" class="card">
+  <span class="pill">OUR PRINCIPLE</span>
+  <h2>Every skill has a place.</h2>
+  <p>Open source needs more than code. Designers, writers, translators, testers, and welcoming community members all help projects grow. Be respectful, read project rules, and never share passwords or private tokens.</p>
+</section>
+</main>
+
+<footer>PatchGarden · A community-inspired open-source starter project · No ads · No account required</footer>
+
+<script>
+const ideas=[
+ {icon:"🎨",title:"Improve a project’s design",type:"design",level:"Beginner",desc:"Review layout, readability, colour contrast, and mobile usability."},
+ {icon:"📝",title:"Fix documentation",type:"docs",level:"Beginner",desc:"Correct typos, clarify installation steps, or add useful examples."},
+ {icon:"🌍",title:"Translate a page",type:"community",level:"Beginner",desc:"Help more people use a project in their preferred language."},
+ {icon:"🧪",title:"Test a feature",type:"code",level:"Beginner",desc:"Follow instructions, reproduce a bug, and write clear steps."},
+ {icon:"💻",title:"Pick a small code issue",type:"code",level:"Intermediate",desc:"Find a labelled beginner issue and read the contribution guide first."},
+ {icon:"🤝",title:"Welcome new contributors",type:"community",level:"Beginner",desc:"Answer questions kindly and help newcomers understand the project."}
+];
+const ideasEl=document.getElementById("ideas");
+function renderIdeas(){
+ const filter=document.getElementById("filter").value;
+ ideasEl.innerHTML="";
+ ideas.filter(x=>filter==="all"||x.type===filter).forEach(x=>{
+  const el=document.createElement("article");el.className="card";
+  const icon=document.createElement("div");icon.className="icon";icon.textContent=x.icon;
+  const title=document.createElement("h3");title.textContent=x.title;
+  const pill=document.createElement("span");pill.className="pill";pill.textContent=x.level;
+  const desc=document.createElement("p");desc.textContent=x.desc;
+  el.append(icon,title,pill,desc);ideasEl.append(el);
+ });
+}
+document.getElementById("filter").addEventListener("change",renderIdeas);
+renderIdeas();
+
+const taskNames=[
+ "Create or sign in to a GitHub account",
+ "Choose a project that interests you",
+ "Read its README and contribution rules",
+ "Find an issue or improvement to work on",
+ "Test your change and follow the project's submission process"
+];
+const tasksEl=document.getElementById("tasks");
+taskNames.forEach((name,i)=>{
+ const label=document.createElement("label");label.className="checkrow";
+ const cb=document.createElement("input");cb.type="checkbox";cb.addEventListener("change",updateProgress);
+ const text=document.createElement("span");text.textContent=name;
+ label.append(cb,text);tasksEl.append(label);
+});
+function updateProgress(){
+ const boxes=[...tasksEl.querySelectorAll("input")];
+ const count=boxes.filter(b=>b.checked).length;
+ document.getElementById("progress").textContent=count+" of "+boxes.length+" complete";
+}
+document.getElementById("generate").addEventListener("click",()=>{
+ document.getElementById("template").value=
+`# Contributing
+
+Thank you for considering contributing!
+
+## Getting started
+1. Read the project's README and existing contribution rules.
+2. Check open issues and discuss substantial changes before starting.
+3. Fork the repository and create a focused branch.
+
+## Making changes
+- Keep changes small and clearly explained.
+- Follow the project's coding and formatting conventions.
+- Test your changes when possible.
+- Never include passwords, API keys, or private information.
+
+## Submitting your contribution
+1. Review your changes.
+2. Write a descriptive commit message.
+3. Open a pull request explaining what changed and why.
+4. Respond respectfully to review feedback.
+
+## Code of conduct
+Be welcoming, respectful, and constructive. Follow the project's official code of conduct.
+
+Please adapt this starter template to your project's actual tools, tests, and policies.`;
+});
+document.getElementById("copy").addEventListener("click",async()=>{
+ const text=document.getElementById("template").value;
+ if(!text){document.getElementById("copyStatus").textContent=" Generate the guide first.";return}
+ try{await navigator.clipboard.writeText(text);document.getElementById("copyStatus").textContent=" Copied!"}
+ catch(e){document.getElementById("template").select();document.getElementById("copyStatus").textContent=" Select the text and copy it manually."}
+});
+
+document.getElementById("check").addEventListener("click",async()=>{
+ const input=document.getElementById("repo").value.trim();
+ const out=document.getElementById("repoResult");
+ const match=input.match(/^(?:https?:\/\/github\.com\/)?([A-Za-z0-9-]+)\/([A-Za-z0-9_.-]+)\/?$/);
+ if(!match){out.textContent="Enter a repository as owner/repository or paste its GitHub URL.";return}
+ const owner=match[1],name=match[2];
+ out.textContent="Checking public repository…";
+ try{
+  const response=await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}`);
+  if(!response.ok)throw new Error(response.status===404?"Repository not found, or it is private.":"GitHub request failed (HTTP "+response.status+"). Try again later.");
+  const repo=await response.json();
+  const filesResponse=await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/contents`);
+  if(!filesResponse.ok)throw new Error("Repository found, but its file list could not be loaded.");
+  const files=await filesResponse.json();
+  if(!Array.isArray(files))throw new Error("GitHub returned an unexpected file listing.");
+  const names=files.map(f=>f.name.toLowerCase());
+  const checks=[
+   ["README","readme.md",names.some(n=>/^readme(?:\.|$)/.test(n))],
+   ["Contribution guide","CONTRIBUTING.md",names.some(n=>/^contributing(?:\.|$)/.test(n))],
+   ["Code of conduct","CODE_OF_CONDUCT.md",names.some(n=>/^code_of_conduct(?:\.|$)/.test(n))],
+   ["License","LICENSE",names.some(n=>n==="license"||n.startsWith("license."))]
+  ];
+  out.replaceChildren();
+  const title=document.createElement("h3");title.textContent=repo.full_name;out.append(title);
+  const summary=document.createElement("p");summary.textContent=(repo.description||"No repository description provided.")+" · ★ "+repo.stargazers_count+" · "+repo.language;out.append(summary);
+  const link=document.createElement("a");link.href=repo.html_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open repository ↗";out.append(link);
+  const h=document.createElement("h3");h.textContent="Onboarding file check";out.append(h);
+  const ul=document.createElement("ul");
+  checks.forEach(([label,file,exists])=>{
+   const li=document.createElement("li");li.textContent=(exists?"✓ ":"○ ")+label+(exists?" found":" missing — consider adding "+file);ul.append(li);
+  });
+  out.append(ul);
+  const note=document.createElement("p");note.className="small";note.textContent="This checks common files in the repository root only. It is a basic onboarding checklist, not a full code or security audit.";out.append(note);
+ }catch(e){out.textContent=e.message+" Public GitHub API access and network availability are required."}
+});
+</script>
+</body>
+</html>
+
