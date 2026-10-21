@@ -35,7 +35,7 @@ git clone https://github.com/YOUR-USERNAME/PatchGarden.git
 4. Open index.html in a browser, or use a local development server.
 5. Make your changes and test them before submitting a pull request.
 
-Replace YOUR-USERNAME with your GitHub username.
+Replace adithrnk with your GitHub username.
 
 Code guidelines
 
