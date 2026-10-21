@@ -37,7 +37,7 @@ git clone https://github.com/adithrnk/PatchGarden.git
 2. Open the project folder.
 3. Open index.html in your web browser.
 
-Replace YOUR-USERNAME with your GitHub username and update the repository URL if you use a different repository name.
+Replace adithrnk with your GitHub username and update the repository URL if you use a different repository name.
 
 🛠️ Built With
 
